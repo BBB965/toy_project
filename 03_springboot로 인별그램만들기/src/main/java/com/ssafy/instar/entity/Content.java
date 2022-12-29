@@ -1,0 +1,31 @@
+package com.ssafy.instar.entity;
+
+import lombok.*;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+public class Content {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int uid;
+    private String path;
+    private String title;
+    private String password;
+
+    @Builder
+    public Content(String path, String title, String password) {
+        super();
+        this.path = path;
+        this.title = title;
+        this.password = password;
+    }
+}
