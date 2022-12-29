@@ -1,4 +1,4 @@
-package com.ssafy.instar.service;
+package com.ssafy.instar;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

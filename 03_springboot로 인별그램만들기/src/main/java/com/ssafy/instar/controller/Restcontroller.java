@@ -40,14 +40,13 @@ public class Restcontroller {
                                     @RequestParam("title") String title,
                                     @RequestParam("password") String password) throws IOException {
         String path = System.getProperty("user.dir");
-        System.out.println(path);
         File file = new File(path + pic.getOriginalFilename());
         Content c1 = new Content();
         c1.setPath(pic.getOriginalFilename());
         c1.setTitle(title);
         c1.setPassword(password);
         pic.transferTo(file);
-        contentRepository.save(c1);
+        this.contentRepository.save(c1);
         Map result = new HashMap<String, String>();
         result.put("path", pic.getOriginalFilename());
         return result;
@@ -57,19 +56,32 @@ public class Restcontroller {
     public Map<String, String> update(@PathVariable int uid, @RequestPart("picture") MultipartFile pic,
                                       @RequestParam("title") String title,
                                       @RequestParam("password") String password) throws IOException {
-        Content content = contentRepository.findById(uid).get();
-        if (content.getPassword() == password) {
+//        List<Content> contentList = contentRepository.findAll();
+//        for (int i = 0;i< contentList.size();i++) {
+//            if (contentList.get(i).getUid() == uid && contentList.get(i).getPassword() == password) {
+//                if (!pic.isEmpty()) {
+//                    String path = System.getProperty("user.dir");
+//                    File file = new File(path + pic.getOriginalFilename());
+//                    pic.transferTo(file);
+//                    contentList.get(i).setPath(pic.getOriginalFilename());
+//                }
+//                contentList.get(i).setTitle(title);
+//                this.contentRepository.save(contentList.get(i));
+//                break;
+//            }
+//        }
+
+        Content content = this.contentRepository.getReferenceById(uid);
+        if (content.getPassword().equals(password)) {
             if (!pic.isEmpty()) {
                 String path = System.getProperty("user.dir");
-                File file = new File(path + "/src/main/resource/static/" + pic.getOriginalFilename());
-                if (!file.exists()) {
-                    file.mkdir();
-                }
+                File file = new File(path + pic.getOriginalFilename());
                 pic.transferTo(file);
                 content.setPath(pic.getOriginalFilename());
             }
             content.setTitle(title);
-            contentRepository.save(content);
+            content.setPassword(password);
+            this.contentRepository.save(content);
         }
         Map result = new HashMap<String, String>();
         result.put("path", pic.getOriginalFilename());
@@ -78,7 +90,7 @@ public class Restcontroller {
 
     @DeleteMapping("/{uid}")
     public void delete(@PathVariable int uid, @RequestBody Map<String, Object> body) {
-        if (body.get("password") == contentRepository.findById(uid).get().getPassword()) {
+        if (body.get("password").equals(contentRepository.getReferenceById(uid).getPassword())) {
             contentRepository.deleteById(uid);
         }
     }
